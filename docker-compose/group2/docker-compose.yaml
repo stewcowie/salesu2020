@@ -2,14 +2,14 @@ version: "3.1"
 
 services:
   bankapi:
-    image: bankapi:latest
+    image: tamatping/bankapi:latest
     #command: entrypoint.sh start-server
     ports:
       - 8083:8083
     networks:
       - pingnet-dmz
   pingaccess:
-    image: pingidentity/pingaccess:6.0.0-alpine-edge
+    image: pingidentity/pingaccess:2001-centos-6.0.0
     command: entrypoint.sh start-server
     environment:
       - SERVER_PROFILE_URL=https://github.com/ttranatping/salesu2020.git
@@ -17,6 +17,7 @@ services:
       - SERVER_PROFILE_PARENT=PA
       - SERVER_PROFILE_PA_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
       - SERVER_PROFILE_PA_PATH=baseline/pingaccess
+      - SERVER_PROFILE_PA_BRANCH=2001
       - PING_IDENTITY_ACCEPT_EULA=YES
       - OPERATIONAL_MODE=STANDALONE
       - PA_CONSOLE_HOST=pingaccess
@@ -39,7 +40,7 @@ services:
       - pingnet-dmz
 
   pingfederate:
-    image: pingidentity/pingfederate:10.0.0-centos-edge
+    image: pingidentity/pingfederate:2001-centos-10.0.0
     command: entrypoint.sh start-server
     environment:
       - SERVER_PROFILE_URL=https://github.com/ttranatping/salesu2020.git
@@ -47,6 +48,7 @@ services:
       - SERVER_PROFILE_PARENT=PF
       - SERVER_PROFILE_PF_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
       - SERVER_PROFILE_PF_PATH=baseline/pingfederate
+      - SERVER_PROFILE_PF_BRANCH=2001
       - PING_IDENTITY_ACCEPT_EULA=YES
       - OPERATIONAL_MODE=STANDALONE
       - PF_ENGINE_PUBLIC_HOSTNAME=sso.pingapac.com
@@ -63,13 +65,14 @@ services:
       - pingnet-dmz
 
   pingdirectory:
-    image: pingidentity/pingdirectory:8.0.0.0-edge
+    image: pingidentity/pingdirectory:2001-8.0.0.0
     environment:
       - SERVER_PROFILE_URL=https://github.com/ttranatping/salesu2020.git
       - SERVER_PROFILE_PATH=group2/pingdirectory
       - SERVER_PROFILE_PARENT=PD
       - SERVER_PROFILE_PD_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
       - SERVER_PROFILE_PD_PATH=baseline/pingdirectory
+      - SERVER_PROFILE_PD_BRANCH=2001
       - PING_IDENTITY_ACCEPT_EULA=YES
     env_file:
       - ~/.pingidentity/devops
@@ -83,16 +86,17 @@ services:
       - pingnet-dmz
 
   pingdatagovernance:
-    image: pingidentity/pingdatagovernance:${PING_IDENTITY_DEVOPS_TAG}
-    environment: 
+    image: pingidentity/pingdatagovernance:2001
+    environment:
       - SERVER_PROFILE_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
       - SERVER_PROFILE_PATH=pdg-pap-integration/pingdatagovernance
-#      - SERVER_PROFILE_BRANCH=pdp-pap-integration
+      - SERVER_PROFILE_BRANCH=2001
       - SERVER_PROFILE_PARENT=PDG
       - SERVER_PROFILE_PDG_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
       - SERVER_PROFILE_PDG_PATH=baseline/pingdatagovernance
+      - SERVER_PROFILE_PDG_BRANCH=2001
       - PING_IDENTITY_ACCEPT_EULA=YES
-    env_file: 
+    env_file:
       - ~/.pingidentity/devops
     #volumes:
     #  - ${HOME}/projects/devops/volumes/full-stack.pingdatagovernance:/opt/out
@@ -105,17 +109,18 @@ services:
       - pingnet-internal
 
   pingdatagovernancepap:
-    image: pingidentity/pingdatagovernancepap:${PING_IDENTITY_DEVOPS_TAG}
-    environment: 
+    image: pingidentity/pingdatagovernancepap:2001
+    environment:
       - SERVER_PROFILE_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
       - SERVER_PROFILE_PATH=pdg-pap-integration/pingdatagovernancepap
+      - SERVER_PROFILE_BRANCH=2001
 #      - SERVER_PROFILE_BRANCH=pdp-pap-integration
 #      - SERVER_PROFILE_PARENT=PDG
 #      - SERVER_PROFILE_PDG_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
 #      - SERVER_PROFILE_PDG_PATH=baseline/pingdatagovernancepap
       - PING_IDENTITY_ACCEPT_EULA=YES
       - HTTPS_PORT=8443
-    env_file: 
+    env_file:
       - ~/.pingidentity/devops
     #volumes:
     #  - ${HOME}/projects/devops/volumes/full-stack.pingdatagovernance:/opt/out
@@ -124,7 +129,8 @@ services:
       - 8443:8443
     networks:
       - pingnet-dmz
-             
+
 networks:
     pingnet-internal:
     pingnet-dmz:
+
